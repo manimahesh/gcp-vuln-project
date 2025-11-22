@@ -19,7 +19,7 @@ resource "google_storage_bucket_object" "archive" {
 resource "google_cloudfunctions_function" "ssrf_function" {
   name        = "ssrf-demo-function"
   description = "Vulnerable Function for SSRF"
-  runtime     = "nodejs16"
+  runtime     = "nodejs20"
 
   available_memory_mb   = 128
   source_archive_bucket = google_storage_bucket.function_bucket.name
@@ -34,6 +34,8 @@ resource "google_cloudfunctions_function" "ssrf_function" {
   environment_variables = {
     PROJECT_ID = var.project_id
   }
+  
+  depends_on = [google_project_service.apis]
 }
 
 # IAM entry for all users to invoke the function (if we want it public)

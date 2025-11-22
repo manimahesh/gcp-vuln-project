@@ -8,6 +8,8 @@ resource "google_artifact_registry_repository" "repo" {
   labels = {
     owner = "pan"
   }
+  
+  depends_on = [google_project_service.apis]
 }
 
 # Secure Bucket (for general use)

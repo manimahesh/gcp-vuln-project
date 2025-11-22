@@ -13,10 +13,26 @@ provider "google" {
   zone    = var.zone
 }
 
+# Enable APIs
+resource "google_project_service" "apis" {
+  for_each = toset([
+    "compute.googleapis.com",
+    "container.googleapis.com",
+    "artifactregistry.googleapis.com",
+    "cloudfunctions.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "iam.googleapis.com"
+  ])
+
+  service            = each.key
+  disable_on_destroy = false
+}
+
 # VPC
 resource "google_compute_network" "vpc" {
   name                    = "vuln-app-vpc"
   auto_create_subnetworks = false
+  depends_on              = [google_project_service.apis]
 }
 
 # Subnet
