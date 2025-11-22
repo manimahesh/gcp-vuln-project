@@ -14,6 +14,12 @@ resource "google_container_cluster" "primary" {
   resource_labels = {
     owner = "pan"
   }
+  
+  # Ensure APIs are enabled and VPC is ready
+  depends_on = [
+    google_compute_network.vpc,
+    google_compute_subnetwork.subnet
+  ]
 }
 
 resource "google_service_account" "gke_sa" {
