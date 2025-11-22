@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDOR Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>IDOR (Insecure Direct Object Reference)</h1>
+        <p>You are logged in as User 2 (Alice). Try to view User 1 (Admin) or User 3 (Bob).</p>
+
+        <div class="form-group">
+            <label for="userId">View Profile ID:</label>
+            <input type="number" id="userId" value="2">
+            <button onclick="loadProfile()">Load Profile</button>
+        </div>
+
+        <div id="profile" class="result">
+            <!-- Profile data -->
+        </div>
+
+        <a href="/">Back to Home</a>
+    </div>
+    <script>
+        async function loadProfile() {
+            const id = document.getElementById('userId').value;
+            const resultDiv = document.getElementById('profile');
+
+            try {
+                const response = await fetch(`/api/users/${id}`);
+                if (response.ok) {
+                    const user = await response.json();
+                    resultDiv.innerHTML = `
+                        <h3>Profile: ${user.username}</h3>
+                        <p>Email: ${user.email}</p>
+                        <p>Secret: <strong>${user.secret}</strong></p>
+                    `;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.textContent = "User not found";
+                    resultDiv.className = 'result error';
+                }
+            } catch (err) {
+                resultDiv.textContent = "Error loading profile";
+            }
+        }
+
+        // Load initial profile
+        loadProfile();
+    </script>
+    <style>
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            background: #f9f9f9;
+        }
+
+        .success {
+            border-left: 5px solid green;
+        }
+
+        .error {
+            border-left: 5px solid red;
+        }
+    </style>
+</body>
+
+</html>

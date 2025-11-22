@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stored XSS Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Guestbook (Stored XSS)</h1>
+        <p>Leave a comment. Try: <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code> or
+            <code>&lt;img src=x onerror=alert(1)&gt;</code></p>
+
+        <form id="commentForm">
+            <div class="form-group">
+                <textarea id="comment" name="comment" rows="4" style="width:100%" required
+                    placeholder="Enter your comment..."></textarea>
+            </div>
+            <button type="submit">Post Comment</button>
+        </form>
+
+        <h3>Comments:</h3>
+        <div id="commentsList"></div>
+
+        <a href="/">Back to Home</a>
+    </div>
+    <script>
+        async function loadComments() {
+            const response = await fetch('/api/comments');
+            const comments = await response.json();
+            const list = document.getElementById('commentsList');
+            list.innerHTML = ''; // Clear list
+            comments.forEach(c => {
+                const div = document.createElement('div');
+                div.className = 'comment';
+                // VULNERABLE: Directly setting innerHTML without sanitization
+                div.innerHTML = c;
+                list.appendChild(div);
+            });
+        }
+
+        document.getElementById('commentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const comment = document.getElementById('comment').value;
+
+            await fetch('/api/comments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ comment })
+            });
+
+            document.getElementById('comment').value = '';
+            loadComments();
+        });
+
+        loadComments();
+    </script>
+    <style>
+        .comment {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+    </style>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insufficient Logging Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Insufficient Logging</h1>
+        <p>Perform a critical action. In a secure system, this should generate a security log.</p>
+
+        <button onclick="performAction()">Perform Critical Action</button>
+
+        <div id="result" class="result"></div>
+
+        <a href="/">Back to Home</a>
+    </div>
+    <script>
+        async function performAction() {
+            const response = await fetch('/api/sensitive-action', {
+                method: 'POST'
+            });
+
+            const data = await response.json();
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = data.message;
+            resultDiv.className = 'result error'; // Highlighting as error/warning
+            resultDiv.innerHTML += "<br><strong>Vulnerability: No logs were generated on the server for this action.</strong>";
+        }
+    </script>
+    <style>
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+    </style>
+</body>
+
+</html>

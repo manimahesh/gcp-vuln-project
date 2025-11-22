@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Misconfiguration Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Security Misconfiguration (Public Bucket)</h1>
+        <p>A Google Cloud Storage bucket containing sensitive files is configured to be publicly accessible.</p>
+
+        <div id="result" class="result">Checking configuration...</div>
+
+        <a href="/">Back to Home</a>
+    </div>
+    <script>
+        fetch('/api/config')
+            .then(res => res.json())
+            .then(data => {
+                const bucketUrl = data.vulnerableBucketUrl;
+                const resultDiv = document.getElementById('result');
+
+                if (bucketUrl) {
+                    const secretFileUrl = `${bucketUrl}/secret_config.json`;
+                    resultDiv.innerHTML = `
+                        <p>Found Public Bucket URL: <code>${bucketUrl}</code></p>
+                        <p>Try to access the secret config file:</p>
+                        <a href="${secretFileUrl}" target="_blank" class="button">Access secret_config.json</a>
+                    `;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.textContent = "Bucket URL not configured.";
+                    resultDiv.className = 'result error';
+                }
+            });
+    </script>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #d93025;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            background: #f9f9f9;
+        }
+    </style>
+</body>
+
+</html>

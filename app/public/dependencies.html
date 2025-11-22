@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vulnerable Dependencies Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Vulnerable Dependencies</h1>
+        <p>This app uses <code>serialize-javascript@2.1.1</code> which is vulnerable to Cross-Site Scripting (XSS) via
+            insecure serialization.</p>
+
+        <button onclick="triggerVuln()">Trigger Vulnerability</button>
+
+        <div id="result" class="result"></div>
+
+        <a href="/">Back to Home</a>
+    </div>
+    <script>
+        async function triggerVuln() {
+            const response = await fetch('/api/serialize');
+            const text = await response.text();
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = "Server Response: " + text;
+
+            // In a real attack, if this response was rendered into the DOM unsafely, the script would execute.
+            // Here we just show the payload is present.
+            if (text.includes("<script>")) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML += "<br><strong>Vulnerability Confirmed: Payload found in output!</strong>";
+            }
+        }
+    </script>
+    <style>
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            background: #f9f9f9;
+            word-break: break-all;
+        }
+
+        .error {
+            border-left: 5px solid red;
+        }
+    </style>
+</body>
+
+</html>

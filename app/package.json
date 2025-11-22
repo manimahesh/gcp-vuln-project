@@ -1,0 +1,16 @@
+{
+    "name": "vulnerable-app",
+    "version": "1.0.0",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.17.1",
+        "body-parser": "^1.19.0",
+        "cookie-parser": "^1.4.5",
+        "mysql": "^2.18.1",
+        "axios": "^0.21.1",
+        "serialize-javascript": "2.1.1"
+    }
+}

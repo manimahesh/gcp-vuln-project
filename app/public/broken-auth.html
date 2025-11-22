@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broken Authentication Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Broken Authentication</h1>
+        <p>The login endpoint allows weak passwords and has no rate limiting. Try to brute force it.</p>
+        <p>Target User: <code>admin</code></p>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <div id="result" class="result"></div>
+        <a href="/">Back to Home</a>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/api/login-weak', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: 'admin', password })
+            });
+
+            const data = await response.json();
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = data.message;
+            resultDiv.className = data.success ? 'result success' : 'result error';
+        });
+    </script>
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .success {
+            background: #e6fffa;
+            color: #047857;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+    </style>
+</body>
+
+</html>

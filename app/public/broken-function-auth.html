@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broken Function Level Auth Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Broken Function Level Auth</h1>
+        <p>You are a regular user. Try to access the Admin function to delete a user.</p>
+        <p>Endpoint: <code>DELETE /api/admin/user/:id</code></p>
+
+        <div class="form-group">
+            <label for="userId">User ID to Delete:</label>
+            <input type="number" id="userId" value="3">
+            <button onclick="deleteUser()">Delete User (Admin Only)</button>
+        </div>
+
+        <div id="result" class="result"></div>
+
+        <a href="/">Back to Home</a>
+    </div>
+    <script>
+        async function deleteUser() {
+            const id = document.getElementById('userId').value;
+            const resultDiv = document.getElementById('result');
+
+            const response = await fetch(`/api/admin/user/${id}`, {
+                method: 'DELETE'
+            });
+
+            const data = await response.json();
+            resultDiv.textContent = data.message;
+            resultDiv.className = data.success ? 'result success' : 'result error';
+
+            if (data.success) {
+                resultDiv.innerHTML += "<br><strong>Vulnerability Confirmed: Regular user performed admin action!</strong>";
+            }
+        }
+    </script>
+    <style>
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .success {
+            background: #e6fffa;
+            color: #047857;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+    </style>
+</body>
+
+</html>

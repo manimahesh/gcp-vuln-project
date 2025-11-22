@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensitive Data Exposure Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Sensitive Data Exposure</h1>
+        <p>Inspect the source code of this page (View Source) to find a hardcoded API key.</p>
+
+        <div id="app-data"></div>
+
+        <a href="/">Back to Home</a>
+    </div>
+    <script>
+        // VULNERABLE: Hardcoded API Key in frontend code
+        const API_KEY = "AIzaSyD-EXAMPLE-API-KEY-DO-NOT-USE";
+
+        console.log("Initializing app with key: " + API_KEY);
+        document.getElementById('app-data').textContent = "App initialized.";
+    </script>
+</body>
+
+</html>
